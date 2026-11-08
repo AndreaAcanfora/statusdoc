@@ -1,5 +1,5 @@
 name: Upstream status (statusdoc)
-description: Check the public status pages of the services you depend on, and stop the job when one has an outage.
+description: 'Check the public status pages of the services you depend on, and stop the job when one has an outage.'
 author: Andrea Acanfora
 branding:
   icon: activity
@@ -7,18 +7,18 @@ branding:
 
 inputs:
   services:
-    description: Domains or status page URLs, separated by spaces or new lines, e.g. "github.com npmjs.com vercel.com".
+    description: 'Domains or status page URLs, separated by spaces or new lines, e.g. "github.com npmjs.com vercel.com".'
     required: true
   fail-on:
-    description: Lowest level that fails the step: minor, major, critical or never.
+    description: 'Lowest level that fails the step: minor, major, critical or never.'
     default: major
   fail-on-unreachable:
-    description: Fail the step when a status page cannot be read. By default it only warns, so that a status page being down does not break your build.
+    description: 'Fail the step when a status page cannot be read. By default it only warns, so that a status page being down does not break your build.'
     default: "false"
 
 outputs:
   worst-level:
-    description: Worst level among the services (operational, maintenance, minor, major, critical).
+    description: 'Worst level among the services (operational, maintenance, minor, major, critical).'
     value: ${{ steps.check.outputs.worst-level }}
   degraded:
     description: '"true" when a service is at or above fail-on.'
@@ -27,7 +27,7 @@ outputs:
     description: '"true" when a status page could not be read.'
     value: ${{ steps.check.outputs.unreachable }}
   report:
-    description: The full report as JSON.
+    description: 'The full report as JSON.'
     value: ${{ steps.check.outputs.report }}
 
 runs:
