@@ -28,6 +28,7 @@ def main(argv: list[str] | None = None, *, out: TextIO = sys.stdout, fetch: Fetc
     p_check = sub.add_parser("check", help="show the status of services (exit 1 if one is degraded)")
     p_check.add_argument("targets", nargs="+", metavar="DOMAIN|URL")
     p_check.add_argument("--json", action="store_true", help="print JSON")
+    p_check.add_argument("--github", action="store_true", help="in GitHub Actions: write a job summary, step outputs and annotations")
     p_check.add_argument("-v", "--verbose", action="store_true", help="list components that are not operational")
     p_check.add_argument(
         "--fail-on", choices=("minor", "major", "critical", "never"), default="minor", help="lowest level that makes the exit code 1 (default: minor)"
@@ -115,9 +116,66 @@ def _check(args: argparse.Namespace, find: Any, out: TextIO) -> int:
             if args.verbose:
                 for comp in item["components"]:
                     print(f"  {'':<{width}}  - {comp['name']}: {comp['status']}", file=out)
+    if args.github:
+        _github(report, threshold, out)
     if degraded:
         return EXIT_DEGRADED
     return EXIT_UNREACHABLE if unreachable else EXIT_OK
+
+
+def _short(error: str) -> str:
+    """Shortens a discovery error that lists every address tried."""
+    head, sep, tried = error.partition(": tried ")
+    return f"{head} (tried {tried.count('; ') + 1} addresses)" if sep else error
+
+
+_EMOJI = {"operational": "✅", "maintenance": "🛠️", "minor": "⚠️", "major": "❌", "critical": "🔥"}
+
+
+def markdown(report: list[dict[str, Any]]) -> str:
+    """Renders a check report as a Markdown table."""
+    lines = ["### Upstream status", "", "| | Service | Status | Details |", "|---|---|---|---|"]
+
+    def cell(text: str) -> str:
+        return text.replace("|", "\\|").replace("\n", " ")
+
+    for item in report:
+        if "error" in item:
+            lines.append(f"| ❓ | {cell(item['target'])} | unreachable | {cell(_short(item['error']))} |")
+            continue
+        details = [cell(item["description"])]
+        for inc in item["incidents"]:
+            name = cell(inc["name"])
+            details.append(f"[{name}]({inc['url']})" if inc.get("url") else name)
+        for m in item["maintenance"]:
+            details.append("Maintenance: " + cell(m["name"]))
+        service = f"[{cell(item['target'])}]({item['page']})" if item.get("page") else cell(item["target"])
+        lines.append(f"| {_EMOJI[item['level']]} | {service} | {item['level']} | {'<br>'.join(details)} |")
+    return "\n".join(lines) + "\n"
+
+
+def _github(report: list[dict[str, Any]], threshold: int, out: TextIO) -> None:
+    """Job summary, step outputs and annotations for GitHub Actions."""
+    import os
+
+    if path := os.environ.get("GITHUB_STEP_SUMMARY"):
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(markdown(report))
+    levels = [LEVELS.index(i["level"]) for i in report if "error" not in i]
+    worst = LEVELS[max(levels)] if levels else "unknown"
+    if path := os.environ.get("GITHUB_OUTPUT"):
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(f"worst-level={worst}\n")
+            f.write(f"degraded={'true' if levels and max(levels) >= threshold else 'false'}\n")
+            f.write(f"unreachable={'true' if any('error' in i for i in report) else 'false'}\n")
+            f.write("report=" + json.dumps(report, ensure_ascii=False, separators=(",", ":")) + "\n")
+    for item in report:
+        if "error" in item:
+            print(f"::warning title={item['target']} unreachable::{_short(item['error'])}", file=out)
+        elif item["level"] != "operational":
+            kind = "error" if LEVELS.index(item["level"]) >= threshold else "warning"
+            incidents = "; ".join(i["name"] for i in item["incidents"])
+            print(f"::{kind} title={item['target']} is {item['level']}::{item['description']}{': ' + incidents if incidents else ''}", file=out)
 
 
 def _summary(target: str, r: Discovery, d: Document) -> dict[str, Any]:

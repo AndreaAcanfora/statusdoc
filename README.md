@@ -58,13 +58,27 @@ Targets are domains (`github.com`), status page URLs or document URLs.
 Exit codes of `check`: `0` all fine, `1` at least one service at or above
 `--fail-on` (default `minor`), `3` a service could not be reached.
 
-### Hold a deploy during an upstream outage
+### GitHub Action: hold a deploy during an upstream outage
 
 ```yaml
-- name: Upstream status
-  run: |
-    pip install git+https://github.com/AndreaAcanfora/statusdoc
-    statusdoc check --fail-on major github.com npmjs.com vercel.com
+- uses: AndreaAcanfora/statusdoc@v0
+  with:
+    services: github.com npmjs.com vercel.com
+    fail-on: major          # minor, major, critical or never
+```
+
+The step fails when a service is at or above `fail-on`, adds a table to the
+job summary and annotations to the run, and sets the outputs `worst-level`,
+`degraded`, `unreachable` and `report` (JSON) for later steps. A status page
+that cannot be read only produces a warning, unless
+`fail-on-unreachable: true`. It runs on Linux, macOS and Windows runners with
+any Python 3.10+, and installs nothing.
+
+Or from any CI:
+
+```sh
+pip install git+https://github.com/AndreaAcanfora/statusdoc
+statusdoc check --fail-on major github.com npmjs.com vercel.com
 ```
 
 ## How documents are found

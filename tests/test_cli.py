@@ -68,6 +68,35 @@ class CLITest(unittest.TestCase):
         self.assertEqual(doc["osd_version"], "0.1")
         self.assertEqual(doc["page"]["name"], "Better Stack")
 
+    def test_github_mode(self):
+        import os
+        import tempfile
+        from pathlib import Path
+
+        with tempfile.TemporaryDirectory() as d:
+            summary, output = os.path.join(d, "summary"), os.path.join(d, "output")
+            env = {"GITHUB_STEP_SUMMARY": summary, "GITHUB_OUTPUT": output}
+            old = {k: os.environ.get(k) for k in env}
+            os.environ.update(env)
+            try:
+                code, out = run("check", "--github", "--fail-on", "critical", "ok.com", "slow.com", "missing.example")
+            finally:
+                for k, v in old.items():
+                    if v is None:
+                        os.environ.pop(k, None)
+                    else:
+                        os.environ[k] = v
+            self.assertEqual(code, EXIT_UNREACHABLE)
+            self.assertIn("::warning title=slow.com is minor::Degraded: Elevated errors", out)
+            self.assertIn("::warning title=missing.example unreachable::no status document found for missing.example (tried", out)
+            md = Path(summary).read_text("utf-8")
+            self.assertIn("| ✅ | [ok.com](https://status.example.com) | operational | All Systems Operational |", md)
+            self.assertIn("| ⚠️ | [slow.com](https://status.example.com) | minor | Degraded<br>Elevated errors |", md)
+            self.assertIn("| ❓ | missing.example | unreachable |", md)
+            outputs = dict(line.split("=", 1) for line in Path(output).read_text("utf-8").splitlines())
+            self.assertEqual((outputs["worst-level"], outputs["degraded"], outputs["unreachable"]), ("minor", "false", "true"))
+            self.assertEqual(len(json.loads(outputs["report"])), 3)
+
 
 if __name__ == "__main__":
     unittest.main()

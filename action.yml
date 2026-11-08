@@ -1,0 +1,56 @@
+name: Upstream status (statusdoc)
+description: Check the public status pages of the services you depend on, and stop the job when one has an outage.
+author: Andrea Acanfora
+branding:
+  icon: activity
+  color: green
+
+inputs:
+  services:
+    description: Domains or status page URLs, separated by spaces or new lines, e.g. "github.com npmjs.com vercel.com".
+    required: true
+  fail-on:
+    description: Lowest level that fails the step: minor, major, critical or never.
+    default: major
+  fail-on-unreachable:
+    description: Fail the step when a status page cannot be read. By default it only warns, so that a status page being down does not break your build.
+    default: "false"
+
+outputs:
+  worst-level:
+    description: Worst level among the services (operational, maintenance, minor, major, critical).
+    value: ${{ steps.check.outputs.worst-level }}
+  degraded:
+    description: '"true" when a service is at or above fail-on.'
+    value: ${{ steps.check.outputs.degraded }}
+  unreachable:
+    description: '"true" when a status page could not be read.'
+    value: ${{ steps.check.outputs.unreachable }}
+  report:
+    description: The full report as JSON.
+    value: ${{ steps.check.outputs.report }}
+
+runs:
+  using: composite
+  steps:
+    - id: check
+      shell: bash
+      env:
+        SERVICES: ${{ inputs.services }}
+        FAIL_ON: ${{ inputs.fail-on }}
+        FAIL_ON_UNREACHABLE: ${{ inputs.fail-on-unreachable }}
+        ACTION_PATH: ${{ github.action_path }}
+      run: |
+        PY=$(command -v python3 || command -v python)
+        # statusdoc has no dependencies: run it straight from the action's
+        # checkout, so its version follows the action's tag and nothing is installed.
+        export PYTHONPATH="$ACTION_PATH"
+        read -r -a targets <<< "$(echo "$SERVICES" | tr '\n,' '  ')"
+        set +e
+        "$PY" -m statusdoc check --github --fail-on "$FAIL_ON" "${targets[@]}"
+        code=$?
+        set -e
+        if [ "$code" = 3 ] && [ "$FAIL_ON_UNREACHABLE" != "true" ]; then
+          exit 0
+        fi
+        exit "$code"
