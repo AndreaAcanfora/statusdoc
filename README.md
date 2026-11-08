@@ -6,16 +6,7 @@ A specification and a Python tool to **find, read and validate the status
 pages of the services you depend on**, starting from nothing but their
 domain.
 
-```console
-$ statusdoc check github.com anthropic.com cloudflare.com stripe.com
-✓ github.com      operational All Systems Operational
-! anthropic.com   minor       Partially Degraded Service
-                  • Degraded performance for Claude Fable 5.1 (minor, investigating)
-✗ cloudflare.com  major       Partial System Outage
-                  • Spectrum Availability Issue in Phoenix (minor, monitoring)
-◷ stripe.com      maintenance All Systems Operational
-                  ◷ Scheduled maintenance for TWINT (until 2026-11-08T15:00:00.000Z)
-```
+![statusdoc check: GitHub, Anthropic, Stripe, Slack and Vercel operational; Cloudflare with a partial outage and its incidents](docs/demo.png)
 
 - **Specification:** [SPEC.md](SPEC.md), Open Status Document (OSD) 0.1, draft.
 - **Compatible with what is deployed:** OSD specifies the `summary.json`
@@ -84,7 +75,7 @@ statusdoc check --fail-on major github.com npmjs.com vercel.com
 ## How documents are found
 
 1. `https://{domain}/.well-known/status`, the discovery URI defined by OSD.
-2. A list of known services bundled with the tool (36 services, each verified
+2. A list of known services bundled with the tool (60 services, each verified
    by hand), checked weekly by CI.
 3. Conventions: `status.{domain}`, `{name}status.com`, `www.{name}status.com`,
    at `/api/v2/summary.json` (Statuspage shape) or `/index.json` (Better Stack).

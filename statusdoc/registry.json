@@ -1,9 +1,21 @@
 {
   "_comment": "Known services whose status document was verified on 2026-11-08. A /.well-known/status document always wins over this list.",
   "services": {
+    "airtable.com": {
+      "page": "https://status.airtable.com",
+      "document": "https://status.airtable.com/api/v2/summary.json"
+    },
+    "akamai.com": {
+      "page": "https://www.akamaistatus.com",
+      "document": "https://www.akamaistatus.com/api/v2/summary.json"
+    },
     "anthropic.com": {
       "page": "https://status.claude.com",
       "document": "https://status.claude.com/api/v2/summary.json"
+    },
+    "asana.com": {
+      "page": "https://status.asana.com",
+      "document": "https://status.asana.com/api/v2/summary.json"
     },
     "atlassian.com": {
       "page": "https://status.atlassian.com",
@@ -17,6 +29,14 @@
       "page": "https://bitbucket.status.atlassian.com",
       "document": "https://bitbucket.status.atlassian.com/api/v2/summary.json"
     },
+    "box.com": {
+      "page": "https://status.box.com",
+      "document": "https://status.box.com/api/v2/summary.json"
+    },
+    "canva.com": {
+      "page": "https://www.canvastatus.com",
+      "document": "https://www.canvastatus.com/api/v2/summary.json"
+    },
     "circleci.com": {
       "page": "https://status.circleci.com",
       "document": "https://status.circleci.com/api/v2/summary.json"
@@ -29,9 +49,21 @@
       "page": "https://status.claude.com",
       "document": "https://status.claude.com/api/v2/summary.json"
     },
+    "clerk.com": {
+      "page": "https://status.clerk.com",
+      "document": "https://status.clerk.com/api/v2/summary.json"
+    },
     "cloudflare.com": {
       "page": "https://www.cloudflarestatus.com",
       "document": "https://www.cloudflarestatus.com/api/v2/summary.json"
+    },
+    "cloudinary.com": {
+      "page": "https://status.cloudinary.com",
+      "document": "https://status.cloudinary.com/api/v2/summary.json"
+    },
+    "cohere.com": {
+      "page": "https://status.cohere.com",
+      "document": "https://status.cohere.com/api/v2/summary.json"
     },
     "coinbase.com": {
       "page": "https://status.coinbase.com",
@@ -53,6 +85,14 @@
       "page": "https://status.dropbox.com",
       "document": "https://status.dropbox.com/api/v2/summary.json"
     },
+    "elastic.co": {
+      "page": "https://status.elastic.co",
+      "document": "https://status.elastic.co/api/v2/summary.json"
+    },
+    "epicgames.com": {
+      "page": "https://status.epicgames.com",
+      "document": "https://status.epicgames.com/api/v2/summary.json"
+    },
     "figma.com": {
       "page": "https://status.figma.com",
       "document": "https://status.figma.com/api/v2/summary.json"
@@ -64,6 +104,10 @@
     "github.com": {
       "page": "https://www.githubstatus.com",
       "document": "https://www.githubstatus.com/api/v2/summary.json"
+    },
+    "grafana.com": {
+      "page": "https://status.grafana.com",
+      "document": "https://status.grafana.com/api/v2/summary.json"
     },
     "groq.com": {
       "page": "https://groqstatus.com",
@@ -85,6 +129,10 @@
       "page": "https://status.mailgun.com",
       "document": "https://status.mailgun.com/api/v2/summary.json"
     },
+    "miro.com": {
+      "page": "https://status.miro.com",
+      "document": "https://status.miro.com/api/v2/summary.json"
+    },
     "mistral.ai": {
       "page": "https://status.mistral.ai",
       "document": "https://status.mistral.ai/api/v2/summary.json"
@@ -93,9 +141,17 @@
       "page": "https://status.mongodb.com",
       "document": "https://status.mongodb.com/api/v2/summary.json"
     },
+    "mux.com": {
+      "page": "https://status.mux.com",
+      "document": "https://status.mux.com/api/v2/summary.json"
+    },
     "netlify.com": {
       "page": "https://www.netlifystatus.com",
       "document": "https://www.netlifystatus.com/api/v2/summary.json"
+    },
+    "newrelic.com": {
+      "page": "https://status.newrelic.com",
+      "document": "https://status.newrelic.com/api/v2/summary.json"
     },
     "npmjs.com": {
       "page": "https://status.npmjs.org",
@@ -105,6 +161,26 @@
       "page": "https://status.openai.com",
       "document": "https://status.openai.com/api/v2/summary.json"
     },
+    "perplexity.ai": {
+      "page": "https://status.perplexity.com",
+      "document": "https://status.perplexity.com/api/v2/summary.json"
+    },
+    "pinecone.io": {
+      "page": "https://status.pinecone.io",
+      "document": "https://status.pinecone.io/api/v2/summary.json"
+    },
+    "planetscale.com": {
+      "page": "https://www.planetscalestatus.com",
+      "document": "https://www.planetscalestatus.com/api/v2/summary.json"
+    },
+    "postman.com": {
+      "page": "https://status.postman.com",
+      "document": "https://status.postman.com/api/v2/summary.json"
+    },
+    "pypi.org": {
+      "page": "https://status.python.org",
+      "document": "https://status.python.org/api/v2/summary.json"
+    },
     "reddit.com": {
       "page": "https://www.redditstatus.com",
       "document": "https://www.redditstatus.com/api/v2/summary.json"
@@ -112,6 +188,18 @@
     "render.com": {
       "page": "https://status.render.com",
       "document": "https://status.render.com/api/v2/summary.json"
+    },
+    "resend.com": {
+      "page": "https://resend-status.com",
+      "document": "https://resend-status.com/api/v2/summary.json"
+    },
+    "rubygems.org": {
+      "page": "https://status.rubygems.org",
+      "document": "https://status.rubygems.org/api/v2/summary.json"
+    },
+    "segment.com": {
+      "page": "https://status.segment.com",
+      "document": "https://status.segment.com/api/v2/summary.json"
     },
     "sendgrid.com": {
       "page": "https://status.twilio.com",
@@ -137,9 +225,17 @@
       "page": "https://status.twilio.com",
       "document": "https://status.twilio.com/api/v2/summary.json"
     },
+    "twitch.tv": {
+      "page": "https://status.twitch.com",
+      "document": "https://status.twitch.com/api/v2/summary.json"
+    },
     "vercel.com": {
       "page": "https://www.vercel-status.com",
       "document": "https://www.vercel-status.com/api/v2/summary.json"
+    },
+    "zapier.com": {
+      "page": "https://status.zapier.com",
+      "document": "https://status.zapier.com/api/v2/summary.json"
     },
     "zoom.us": {
       "page": "https://www.zoomstatus.com",
