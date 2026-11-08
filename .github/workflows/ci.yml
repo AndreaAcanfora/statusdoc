@@ -34,3 +34,42 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - run: uvx ruff check .
       - run: uvx ruff format --check .
+
+  action:
+    name: GitHub Action
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - id: status
+        uses: ./
+        with:
+          services: |
+            github.com
+            npmjs.com
+          fail-on: never
+      - name: Outputs are set
+        shell: bash
+        run: |
+          echo "worst level: ${{ steps.status.outputs.worst-level }}"
+          test -n "${{ steps.status.outputs.worst-level }}"
+          test "${{ steps.status.outputs.degraded }}" = false
+
+  action-system-python:
+    name: GitHub Action (system Python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: status
+        uses: ./
+        with:
+          services: github.com
+          fail-on: never
+      - run: test -n "${{ steps.status.outputs.worst-level }}"
+
