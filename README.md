@@ -1,6 +1,7 @@
 # statusdoc: Open Status Document
 
 [![CI](https://github.com/AndreaAcanfora/statusdoc/actions/workflows/ci.yml/badge.svg)](https://github.com/AndreaAcanfora/statusdoc/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/statusdoc)](https://pypi.org/project/statusdoc/)
 
 A specification and a Python tool to **find, read and validate the status
 pages of the services you depend on**, starting from nothing but their
@@ -31,7 +32,7 @@ announce its document on its own domain.
 ## Install
 
 ```sh
-pip install git+https://github.com/AndreaAcanfora/statusdoc
+pip install statusdoc
 ```
 
 ## Command line
@@ -68,7 +69,7 @@ any Python 3.10+, and installs nothing.
 Or from any CI:
 
 ```sh
-pip install git+https://github.com/AndreaAcanfora/statusdoc
+pip install statusdoc
 statusdoc check --fail-on major github.com npmjs.com vercel.com
 ```
 
