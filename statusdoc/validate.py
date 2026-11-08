@@ -183,7 +183,7 @@ def _incident(c: _Checker, inc: Any, path: str, statuses: tuple[str, ...], maint
     c.time(inc, "resolved_at", path, "OPTIONAL")
     if maintenance:
         c.time(inc, "scheduled_for", path)
-        c.time(inc, "scheduled_until", path)
+        c.time(inc, "scheduled_until", path, "SHOULD", nullable=True)
         start, end = inc.get("scheduled_for"), inc.get("scheduled_until")
         if isinstance(start, str) and isinstance(end, str) and _valid_time(start) and _valid_time(end) and _parse(end) < _parse(start):
             c.must(f"{path}.scheduled_until", "is before scheduled_for")

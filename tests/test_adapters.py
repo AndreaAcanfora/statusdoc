@@ -87,3 +87,77 @@ class BetterStackTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SlackTest(unittest.TestCase):
+    def test_all_clear(self):
+        data = fixture("slack")
+        self.assertEqual(detect(data), "slack")
+        doc = load(data)
+        self.assertEqual((doc.name, doc.level, doc.source_format), ("Slack", "operational", "slack"))
+        self.assertIn("Huddles", [c.name for c in doc.components])
+        self.assertEqual([i for i in validate_document(doc.to_dict()) if i.level == "MUST"], [])
+
+    def test_issues_from_the_documented_example(self):
+        # Shaped like the sample response in Slack's Status API documentation.
+        data = {
+            "status": "active",
+            "date_created": "2019-04-09T07:35:46-07:00",
+            "date_updated": "2019-04-09T07:35:46-07:00",
+            "active_incidents": [
+                {
+                    "id": "546",
+                    "date_created": "2018-09-07T14:35:00-07:00",
+                    "date_updated": "2018-09-07T18:34:15-07:00",
+                    "title": "Slack's forwarding email feature is failing for some customers",
+                    "type": "incident",
+                    "status": "active",
+                    "url": "https://slack-status.com/2018-09/7dea1cd14cd0f657",
+                    "services": ["Apps/Integrations/APIs"],
+                    "notes": [
+                        {"date_created": "2018-09-07T15:00:00-07:00", "body": "Investigating."},
+                        {"date_created": "2018-09-07T18:34:15-07:00", "body": "Technical Summary: fixed."},
+                    ],
+                },
+                {
+                    "id": "547",
+                    "date_created": "2018-09-07T14:00:00-07:00",
+                    "title": "Messages not sending",
+                    "type": "outage",
+                    "status": "active",
+                    "services": ["Messaging"],
+                    "notes": [],
+                },
+                {
+                    "id": "548",
+                    "date_created": "2018-09-08T09:00:00-07:00",
+                    "title": "Database upgrade",
+                    "type": "notice",
+                    "status": "scheduled",
+                    "services": [],
+                    "notes": [],
+                },
+                {
+                    "id": "549",
+                    "date_created": "2018-09-06T09:00:00-07:00",
+                    "title": "Old issue",
+                    "type": "incident",
+                    "status": "resolved",
+                    "services": ["Search"],
+                    "notes": [],
+                },
+            ],
+        }
+        doc = load(data)
+        self.assertEqual(doc.level, "major")
+        status = {c.name: c.status for c in doc.components}
+        self.assertEqual(status["Messaging"], "major_outage")
+        self.assertEqual(status["Apps/Integrations/APIs"], "degraded_performance")
+        self.assertEqual(status["Search"], "operational")
+        self.assertEqual(
+            [(i.name, i.impact) for i in doc.open_incidents],
+            [("Slack's forwarding email feature is failing for some customers", "minor"), ("Messages not sending", "major")],
+        )
+        self.assertEqual(doc.open_incidents[0].updates[0].body, "Technical Summary: fixed.")
+        self.assertEqual([m.name for m in doc.maintenances], ["Database upgrade"])
+        self.assertEqual([i for i in validate_document(doc.to_dict()) if i.level == "MUST"], [])

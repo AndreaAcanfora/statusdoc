@@ -125,6 +125,10 @@
       "page": "https://www.shopifystatus.com",
       "document": "https://www.shopifystatus.com/api/v2/summary.json"
     },
+    "slack.com": {
+      "page": "https://slack-status.com",
+      "document": "https://slack-status.com/api/v2.0.0/current"
+    },
     "supabase.com": {
       "page": "https://status.supabase.com",
       "document": "https://status.supabase.com/api/v2/summary.json"

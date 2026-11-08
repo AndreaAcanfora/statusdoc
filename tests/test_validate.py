@@ -63,6 +63,11 @@ class ValidateDocumentTest(unittest.TestCase):
         )
         del m["scheduled_for"]
         self.assertIn("$.scheduled_maintenances[0].scheduled_for: required string", messages(validate_document(minimal(scheduled_maintenances=[m])), "MUST"))
+        # An unknown end is allowed (null), but recommended.
+        m = incident(status="scheduled", impact="none", scheduled_for="2026-11-08T12:00:00Z", scheduled_until=None)
+        self.assertEqual(messages(validate_document(minimal(scheduled_maintenances=[m])), "MUST"), [])
+        del m["scheduled_until"]
+        self.assertIn("$.scheduled_maintenances[0].scheduled_until: recommended", messages(validate_document(minimal(scheduled_maintenances=[m])), "SHOULD"))
 
 
 class ValidateHTTPTest(unittest.TestCase):

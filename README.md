@@ -70,13 +70,13 @@ Exit codes of `check`: `0` all fine, `1` at least one service at or above
 ## How documents are found
 
 1. `https://{domain}/.well-known/status`, the discovery URI defined by OSD.
-2. A list of known services bundled with the tool (35 services, each verified
+2. A list of known services bundled with the tool (36 services, each verified
    by hand), checked weekly by CI.
 3. Conventions: `status.{domain}`, `{name}status.com`, `www.{name}status.com`,
    at `/api/v2/summary.json` (Statuspage shape) or `/index.json` (Better Stack).
 
-Better Stack pages are converted to OSD on the fly. Other formats can be
-added as adapters.
+Better Stack pages and the Slack Status API are converted to OSD on the fly.
+Other formats can be added as adapters.
 
 ## Library
 

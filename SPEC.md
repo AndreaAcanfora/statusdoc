@@ -177,7 +177,9 @@ An update has `id`, `status` (as the incident), `body` (text) and
 Each item has the members of an incident, with these differences:
 
 - `status` is `scheduled`, `in_progress`, `verifying` or `completed`;
-- `scheduled_for` and `scheduled_until` (REQUIRED) give the planned window.
+- `scheduled_for` (REQUIRED) is the planned start;
+- `scheduled_until` (RECOMMENDED) is the planned end, or null when the
+  publisher does not announce one.
 
 ### 4.7 Unknown values
 

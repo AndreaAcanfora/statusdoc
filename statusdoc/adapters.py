@@ -34,6 +34,8 @@ def detect(data: Any) -> str | None:
     d = data.get("data")
     if isinstance(d, dict) and d.get("type") == "status_page" and isinstance(data.get("included"), list):
         return "betterstack"
+    if isinstance(data.get("status"), str) and isinstance(data.get("active_incidents"), list):
+        return "slack"
     return None
 
 
@@ -44,6 +46,8 @@ def load(data: Any) -> Document:
         return parse(data)
     if fmt == "betterstack":
         return from_betterstack(data)
+    if fmt == "slack":
+        return from_slack(data)
     raise FormatError("not a status document in a known format")
 
 
@@ -140,3 +144,94 @@ def _status_of(severity: int) -> str:
         if s == severity:
             return status
     return "operational"
+
+
+# Services listed by the Slack Status API documentation for /api/v2.0.0/current.
+SLACK_SERVICES = (
+    "Login/SSO",
+    "Messaging",
+    "Notifications",
+    "Search",
+    "Workspace/Org Administration",
+    "Canvases",
+    "Connectivity",
+    "Files",
+    "Huddles",
+    "Apps/Integrations/APIs",
+    "Workflows",
+)
+# Slack issue types → (OSD incident impact, status of the affected services).
+_SLACK_TYPES = {"outage": ("major", "major_outage"), "incident": ("minor", "degraded_performance"), "notice": ("none", "operational")}
+
+
+def from_slack(data: dict[str, Any]) -> Document:
+    """Converts the Slack Status API (`https://slack-status.com/api/v2.0.0/current`) to OSD.
+
+    Slack reports issues, not component states: affected services take the
+    status implied by the issue type (an outage makes them major_outage, an
+    incident degraded_performance, a notice leaves them operational).
+    """
+    services: dict[str, Component] = {}
+
+    def service(name: str) -> Component:
+        if name not in services:
+            slug = "".join(ch if ch.isalnum() else "-" for ch in name.lower()).strip("-")
+            services[name] = Component(id=slug, name=name, status="operational", position=len(services))
+        return services[name]
+
+    for name in SLACK_SERVICES:
+        service(name)
+
+    incidents: list[Incident] = []
+    maintenances: list[Incident] = []
+    worst = 0
+    for item in data.get("active_incidents", []):
+        if not isinstance(item, dict):
+            continue
+        status = str(item.get("status", ""))
+        kind = str(item.get("type", ""))
+        impact, service_status = _SLACK_TYPES.get(kind, ("minor", "degraded_performance"))
+        notes = [n for n in item.get("notes", []) if isinstance(n, dict)]
+        notes.sort(key=lambda n: str(n.get("date_created", "")), reverse=True)
+        affected = [service(str(s)) for s in item.get("services", []) if isinstance(s, str)]
+        entry = Incident(
+            id=str(item.get("id", "")),
+            name=str(item.get("title", "")),
+            status="",
+            impact=impact,
+            created_at=str(item.get("date_created", "")),
+            updated_at=item.get("date_updated"),
+            shortlink=item.get("url"),
+            updates=[
+                Update(id=f"{item.get('id', '')}-{n}", status="", body=str(note.get("body", "")), created_at=str(note.get("date_created", "")))
+                for n, note in enumerate(notes)
+            ],
+        )
+        if status in ("scheduled", "completed", "cancelled"):
+            if status == "scheduled":
+                entry.status, entry.impact = "scheduled", "none"
+                entry.scheduled_for = entry.created_at
+                maintenances.append(entry)
+            continue
+        entry.status = "resolved" if status == "resolved" else "investigating"
+        for u in entry.updates:
+            u.status = entry.status
+        if not entry.resolved:
+            for c in affected:
+                if _BETTERSTACK_SEVERITY[service_status] > _BETTERSTACK_SEVERITY[c.status]:
+                    c.status = service_status
+            worst = max(worst, {"none": 0, "minor": 2, "major": 3}[impact])
+        entry.components = [Component(id=c.id, name=c.name, status=c.status) for c in affected]
+        incidents.append(entry)
+
+    return Document(
+        name="Slack",
+        url="https://slack-status.com",
+        updated_at=str(data.get("date_updated", "")),
+        indicator=_INDICATOR_OF[worst],
+        description=_DESCRIPTION_OF[worst],
+        components=list(services.values()),
+        incidents=incidents,
+        maintenances=maintenances,
+        source_format="slack",
+    )
