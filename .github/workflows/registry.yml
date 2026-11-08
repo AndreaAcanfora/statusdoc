@@ -1,0 +1,36 @@
+name: Service list
+
+# Checks every week that each known service still serves a readable status
+# document. Network failures do not affect the CI of pull requests.
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Read every document in the list
+        run: |
+          python - <<'PY'
+          import sys
+          from statusdoc import discover
+          from statusdoc.discover import load_registry
+          failed = []
+          for domain, entry in sorted(load_registry().items()):
+              try:
+                  d = discover(entry["document"])
+                  print(f"ok    {domain}: {d.document.name} ({d.document.level})")
+              except Exception as e:
+                  failed.append(domain)
+                  print(f"FAIL  {domain}: {e}")
+          sys.exit(1 if failed else 0)
+          PY

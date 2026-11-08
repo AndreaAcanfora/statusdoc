@@ -1,0 +1,145 @@
+{
+  "_comment": "Known services whose status document was verified on 2026-11-08. A /.well-known/status document always wins over this list.",
+  "services": {
+    "anthropic.com": {
+      "page": "https://status.claude.com",
+      "document": "https://status.claude.com/api/v2/summary.json"
+    },
+    "atlassian.com": {
+      "page": "https://status.atlassian.com",
+      "document": "https://status.atlassian.com/api/v2/summary.json"
+    },
+    "betterstack.com": {
+      "page": "https://status.betterstack.com",
+      "document": "https://status.betterstack.com/index.json"
+    },
+    "bitbucket.org": {
+      "page": "https://bitbucket.status.atlassian.com",
+      "document": "https://bitbucket.status.atlassian.com/api/v2/summary.json"
+    },
+    "circleci.com": {
+      "page": "https://status.circleci.com",
+      "document": "https://status.circleci.com/api/v2/summary.json"
+    },
+    "claude.ai": {
+      "page": "https://status.claude.com",
+      "document": "https://status.claude.com/api/v2/summary.json"
+    },
+    "claude.com": {
+      "page": "https://status.claude.com",
+      "document": "https://status.claude.com/api/v2/summary.json"
+    },
+    "cloudflare.com": {
+      "page": "https://www.cloudflarestatus.com",
+      "document": "https://www.cloudflarestatus.com/api/v2/summary.json"
+    },
+    "coinbase.com": {
+      "page": "https://status.coinbase.com",
+      "document": "https://status.coinbase.com/api/v2/summary.json"
+    },
+    "digitalocean.com": {
+      "page": "https://status.digitalocean.com",
+      "document": "https://status.digitalocean.com/api/v2/summary.json"
+    },
+    "discord.com": {
+      "page": "https://discordstatus.com",
+      "document": "https://discordstatus.com/api/v2/summary.json"
+    },
+    "docker.com": {
+      "page": "https://www.dockerstatus.com",
+      "document": "https://www.dockerstatus.com/api/v2/summary.json"
+    },
+    "dropbox.com": {
+      "page": "https://status.dropbox.com",
+      "document": "https://status.dropbox.com/api/v2/summary.json"
+    },
+    "figma.com": {
+      "page": "https://status.figma.com",
+      "document": "https://status.figma.com/api/v2/summary.json"
+    },
+    "fly.io": {
+      "page": "https://status.flyio.net",
+      "document": "https://status.flyio.net/api/v2/summary.json"
+    },
+    "github.com": {
+      "page": "https://www.githubstatus.com",
+      "document": "https://www.githubstatus.com/api/v2/summary.json"
+    },
+    "groq.com": {
+      "page": "https://groqstatus.com",
+      "document": "https://groqstatus.com/api/v2/summary.json"
+    },
+    "hashicorp.com": {
+      "page": "https://status.hashicorp.com",
+      "document": "https://status.hashicorp.com/api/v2/summary.json"
+    },
+    "hubspot.com": {
+      "page": "https://status.hubspot.com",
+      "document": "https://status.hubspot.com/api/v2/summary.json"
+    },
+    "linear.app": {
+      "page": "https://linearstatus.com",
+      "document": "https://linearstatus.com/api/v2/summary.json"
+    },
+    "mailgun.com": {
+      "page": "https://status.mailgun.com",
+      "document": "https://status.mailgun.com/api/v2/summary.json"
+    },
+    "mistral.ai": {
+      "page": "https://status.mistral.ai",
+      "document": "https://status.mistral.ai/api/v2/summary.json"
+    },
+    "mongodb.com": {
+      "page": "https://status.mongodb.com",
+      "document": "https://status.mongodb.com/api/v2/summary.json"
+    },
+    "netlify.com": {
+      "page": "https://www.netlifystatus.com",
+      "document": "https://www.netlifystatus.com/api/v2/summary.json"
+    },
+    "npmjs.com": {
+      "page": "https://status.npmjs.org",
+      "document": "https://status.npmjs.org/api/v2/summary.json"
+    },
+    "openai.com": {
+      "page": "https://status.openai.com",
+      "document": "https://status.openai.com/api/v2/summary.json"
+    },
+    "reddit.com": {
+      "page": "https://www.redditstatus.com",
+      "document": "https://www.redditstatus.com/api/v2/summary.json"
+    },
+    "render.com": {
+      "page": "https://status.render.com",
+      "document": "https://status.render.com/api/v2/summary.json"
+    },
+    "sendgrid.com": {
+      "page": "https://status.twilio.com",
+      "document": "https://status.twilio.com/api/v2/summary.json"
+    },
+    "sentry.io": {
+      "page": "https://status.sentry.io",
+      "document": "https://status.sentry.io/api/v2/summary.json"
+    },
+    "shopify.com": {
+      "page": "https://www.shopifystatus.com",
+      "document": "https://www.shopifystatus.com/api/v2/summary.json"
+    },
+    "supabase.com": {
+      "page": "https://status.supabase.com",
+      "document": "https://status.supabase.com/api/v2/summary.json"
+    },
+    "twilio.com": {
+      "page": "https://status.twilio.com",
+      "document": "https://status.twilio.com/api/v2/summary.json"
+    },
+    "vercel.com": {
+      "page": "https://www.vercel-status.com",
+      "document": "https://www.vercel-status.com/api/v2/summary.json"
+    },
+    "zoom.us": {
+      "page": "https://www.zoomstatus.com",
+      "document": "https://www.zoomstatus.com/api/v2/summary.json"
+    }
+  }
+}

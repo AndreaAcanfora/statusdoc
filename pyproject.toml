@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "statusdoc"
+version = "0.1.0"
+description = "Open Status Document: a spec and tools to discover, read and validate service status pages"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Andrea Acanfora" }]
+requires-python = ">=3.10"
+dependencies = []
+keywords = ["status page", "statuspage", "incidents", "monitoring", "sre", "uptime"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: System :: Monitoring",
+  "Environment :: Console",
+]
+
+[project.urls]
+Homepage = "https://github.com/AndreaAcanfora/statusdoc"
+Specification = "https://github.com/AndreaAcanfora/statusdoc/blob/master/SPEC.md"
+
+[project.scripts]
+statusdoc = "statusdoc.cli:main"
+
+[tool.setuptools]
+packages = ["statusdoc"]
+
+[tool.setuptools.package-data]
+statusdoc = ["registry.json", "py.typed"]
+
+[tool.ruff]
+line-length = 160
+target-version = "py310"
